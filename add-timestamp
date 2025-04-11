@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+full_filename="$1"
+directory="$(dirname -- $full_filename)"
+old_filename="${full_filename##*/}"
+timestamp=$(stat -c '%w' "$full_filename" | sed -E 's/\.[0-9]+//; s/ ([+-][0-9]{4})$/\1/; s/ /T/')
+extension="${old_filename##*.}"
+new_filename="${old_filename%.*}_${timestamp}.${extension}"
+new_filename="${directory}/${new_filename}"
+echo $full_filename $new_filename
+echo -ne "Accept? "
+read confirm
+[ $confirm = Y -o $confirm = y ] && mv -i "$full_filename" "$new_filename"
